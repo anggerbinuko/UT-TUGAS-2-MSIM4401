@@ -1,56 +1,91 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
+    <ion-header>
       <ion-toolbar>
-        <ion-title>Blank</ion-title>
+        <ion-title>Crypto Prices</ion-title>
       </ion-toolbar>
     </ion-header>
-
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Blank</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
-      <div id="container">
-        <strong>Ready to create an app?</strong>
-        <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <ion-content>
+      <div class="container">
+        <ion-button @click="fetchData" color="primary">Get Data</ion-button>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Symbol</th>
+                <th>Harga USD</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="crypto in cryptoData" :key="crypto.id">
+                <td>{{ crypto.name }}</td>
+                <td>{{ crypto.symbol }}</td>
+                <td>{{ crypto.price_usd }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
-<script setup lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+<script>
+import { getCryptos } from '../services/cryptoService';
+
+export default {
+  name: 'HomePage',
+  data() {
+    return {
+      cryptoData: []
+    };
+  },
+  methods: {
+    async fetchData() {
+      this.cryptoData = await getCryptos();
+    }
+  }
+};
 </script>
 
 <style scoped>
-#container {
+/* Menambahkan background putih untuk konten halaman */
+ion-content {
+  --ion-background-color: #ffffff;
+  --ion-text-color: #333333;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+}
+
+/* Menambahkan background putih untuk kontainer tabel */
+.table-container {
+  background-color: #ffffff;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Opsional: menambah bayangan */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Menambahkan background putih untuk sel header tabel */
+th, td {
+  padding: 8px;
   text-align: center;
-  
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  border-bottom: 1px solid #ddd;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-  
-  color: #8c8c8c;
-  
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
+th {
+  background-color: #f5f5f5;
 }
 </style>
